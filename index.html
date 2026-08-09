@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Heure &amp; Météo — Casablanca</title>
+  <title>Heure, Météo &amp; Océan — Casablanca</title>
   <style>
     :root {
-      --bg-1: #0f2027;
-      --bg-2: #203a43;
-      --bg-3: #2c5364;
-      --card: rgba(255, 255, 255, 0.08);
-      --text: #f4f7fa;
-      --muted: rgba(244, 247, 250, 0.72);
+      --bg-1: #5b3a1d;
+      --bg-2: #b07f2c;
+      --bg-3: #ecc25c;
+      --card: rgba(45, 28, 14, 0.35);
+      --text: #fdf6e9;
+      --muted: rgba(253, 246, 233, 0.78);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       min-height: 100vh;
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       color: var(--text);
-      background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
+      background: linear-gradient(150deg, var(--bg-1) 0%, var(--bg-2) 45%, var(--bg-3) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -30,11 +30,11 @@
       background: var(--card);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(253, 246, 233, 0.22);
       border-radius: 24px;
       padding: 2rem 2rem 2.25rem;
       text-align: center;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
     }
     .city {
       font-size: 1.05rem;
@@ -51,7 +51,7 @@
       line-height: 1.05;
     }
     .date { margin-top: 0.5rem; color: var(--muted); font-size: 1rem; }
-    .divider { height: 1px; background: rgba(255, 255, 255, 0.15); margin: 1.75rem 0; }
+    .divider { height: 1px; background: rgba(253, 246, 233, 0.2); margin: 1.75rem 0; }
     .weather { display: flex; align-items: center; justify-content: center; gap: 1.25rem; }
     .weather .icon { font-size: 3.25rem; line-height: 1; }
     .temp { font-size: 2.75rem; font-weight: 300; line-height: 1.1; }
@@ -69,7 +69,41 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
-    .updated { margin-top: 1.75rem; font-size: 0.75rem; color: rgba(244, 247, 250, 0.45); }
+    .section-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .wave {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .wave .icon { font-size: 2.75rem; line-height: 1; }
+    .wave-value { font-size: 2.5rem; font-weight: 300; line-height: 1.1; }
+    .wave-value small { font-size: 1rem; color: var(--muted); font-weight: 400; }
+    .hours {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    .hour-chip {
+      background: rgba(253, 246, 233, 0.14);
+      border: 1px solid rgba(253, 246, 233, 0.18);
+      border-radius: 10px;
+      padding: 0.45rem 0.6rem;
+      min-width: 62px;
+      font-size: 0.85rem;
+    }
+    .hour-chip strong { display: block; font-size: 1rem; font-weight: 600; }
+    .hour-chip span { font-size: 0.7rem; color: var(--muted); }
+    .updated { margin-top: 1.75rem; font-size: 0.75rem; color: rgba(253, 246, 233, 0.5); }
   </style>
 </head>
 <body>
@@ -94,6 +128,18 @@
       <div><span>Ressenti</span><strong id="feels">--°</strong></div>
     </div>
 
+    <div class="divider"></div>
+
+    <div class="section-title">Océan — au large de Casablanca 🌊</div>
+    <div class="wave">
+      <span class="icon">🌊</span>
+      <div>
+        <div class="wave-value" id="wave">--<small> m</small></div>
+        <div class="cond" id="waveExtra">Chargement…</div>
+      </div>
+    </div>
+    <div class="hours" id="hours"></div>
+
     <div class="updated" id="updated"></div>
   </main>
 
@@ -102,6 +148,9 @@
     const TZ = "Africa/Casablanca";
     const LAT = 33.5731;
     const LON = -7.5898;
+    // Point au large de Casablanca (Atlantique) pour les vagues
+    const SEA_LAT = 33.60;
+    const SEA_LON = -7.80;
 
     const timeEl = document.getElementById("time");
     const dateEl = document.getElementById("date");
@@ -112,6 +161,9 @@
     const windEl = document.getElementById("wind");
     const feelsEl = document.getElementById("feels");
     const updatedEl = document.getElementById("updated");
+    const waveEl = document.getElementById("wave");
+    const waveExtraEl = document.getElementById("waveExtra");
+    const hoursEl = document.getElementById("hours");
 
     // --- Horloge (heure locale de Casablanca) ---
     function tick() {
@@ -186,10 +238,55 @@
       }
     }
 
+    // --- Vagues : API Marine Open-Meteo (gratuite, sans clé) ---
+    function degToCardinal(deg) {
+      const dirs = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+        "S", "SSO", "SO", "OSO", "O", "ONO", "NO", "NNO"];
+      return dirs[Math.round(deg / 22.5) % 16];
+    }
+
+    async function loadMarine() {
+      const url = "https://marine-api.open-meteo.com/v1/marine?latitude=" + SEA_LAT +
+        "&longitude=" + SEA_LON +
+        "&current=wave_height,wave_direction,wave_period,sea_surface_temperature" +
+        "&hourly=wave_height&forecast_days=1&cell_selection=sea&timezone=" + TZ;
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        const c = data.current;
+        waveEl.innerHTML = c.wave_height.toFixed(1) + "<small> m</small>";
+        waveExtraEl.textContent =
+          "Période " + Math.round(c.wave_period) + " s · direction " +
+          degToCardinal(c.wave_direction) + " · eau " + Math.round(c.sea_surface_temperature) + "°";
+
+        // Prochaines 6 heures
+        const times = data.hourly.time;
+        const heights = data.hourly.wave_height;
+        const now = new Date();
+        hoursEl.innerHTML = "";
+        let shown = 0;
+        for (let i = 0; i < times.length && shown < 6; i++) {
+          const t = new Date(times[i] + "Z");
+          if (t <= now) continue;
+          const hh = String(t.getUTCHours()).padStart(2, "0") + "h";
+          const chip = document.createElement("div");
+          chip.className = "hour-chip";
+          chip.innerHTML = "<strong>" + heights[i].toFixed(1) + " m</strong><span>" + hh + "</span>";
+          hoursEl.appendChild(chip);
+          shown++;
+        }
+      } catch (err) {
+        waveExtraEl.textContent = "Vagues indisponibles (" + err.message + ")";
+      }
+    }
+
     tick();
     setInterval(tick, 1000);
     loadWeather();
     setInterval(loadWeather, 10 * 60 * 1000); // rafraîchit toutes les 10 min
+    loadMarine();
+    setInterval(loadMarine, 30 * 60 * 1000); // rafraîchit toutes les 30 min
   </script>
 </body>
 </html>

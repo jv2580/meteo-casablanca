@@ -4,6 +4,7 @@ Une page web unique qui affiche :
 
 - **L'heure en direct** de Casablanca (fuseau `Africa/Casablanca`)
 - **La météo actuelle** (température, ressenti, humidité, vent) fournie gratuitement par l'API [Open-Meteo](https://open-meteo.com/) — **aucune clé API nécessaire**
+- **L'océan au large de Casablanca** : hauteur actuelle des vagues, période, direction et température de l'eau, plus l'évolution heure par heure (API [Marine Open-Meteo](https://open-meteo.com/en/docs/marine-weather-api), gratuite et sans clé)
 
 ## 🗂️ Contenu du projet
 
