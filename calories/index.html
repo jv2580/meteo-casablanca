@@ -82,6 +82,31 @@
       margin-top: 0.4rem;
     }
     .btn:active { transform: scale(0.98); }
+    .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .chips button {
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(0, 0, 0, 0.25);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .chips button.active { background: var(--accent); color: #1b2b1f; font-weight: 600; border-color: transparent; }
+    .chips button.like { background: #3d8b4f; border-color: transparent; font-weight: 600; }
+    .chips button.dislike { background: #b04a3a; border-color: transparent; font-weight: 600; }
+    .btn-secondary {
+      width: 100%;
+      padding: 0.7rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: transparent;
+      color: var(--text);
+      font-size: 0.92rem;
+      cursor: pointer;
+      margin-top: 0.75rem;
+    }
+    .btn-secondary:active { transform: scale(0.98); }
     .hidden { display: none; }
     .bignum { font-size: 2.6rem; font-weight: 300; line-height: 1.1; }
     .bignum small { font-size: 1rem; color: var(--muted); font-weight: 400; }
@@ -114,10 +139,11 @@
     .meal .name { font-weight: 600; }
     .meal .detail { color: var(--muted); font-size: 0.82rem; margin-top: 0.2rem; }
     .note { color: var(--muted); font-size: 0.72rem; margin-top: 0.9rem; line-height: 1.4; }
-    .activities { margin-top: 0.4rem; }
-    .act-line { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.55rem; }
-    .act-line label { flex: 1; font-size: 0.88rem; }
-    .act-line input { width: 70px; padding: 0.4rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.25); background: rgba(0,0,0,0.25); color: var(--text); font-size: 0.9rem; text-align: center; }
+    .activities { margin-top: 0.4rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 0.9rem; }
+    .act-line { display: flex; align-items: center; gap: 0.4rem; }
+    .act-line label { flex: 1; font-size: 0.8rem; }
+    .act-line input { width: 52px; padding: 0.4rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.25); background: rgba(0,0,0,0.25); color: var(--text); font-size: 0.9rem; text-align: center; }
+    .act-line .unit { font-size: 0.7rem; color: var(--muted); }
   </style>
 </head>
 <body>
@@ -156,26 +182,17 @@
 
       <h2 style="margin-top:0.4rem">2 · Votre sport (par jour)</h2>
       <div class="activities">
-        <div class="act-line">
-          <label>🚶 Marche</label>
-          <input type="number" id="walk" min="0" max="600" placeholder="0"> <span style="font-size:0.8rem;color:var(--muted)">min</span>
-        </div>
-        <div class="act-line">
-          <label>🏃 Course à pied</label>
-          <input type="number" id="run" min="0" max="600" placeholder="0"> <span style="font-size:0.8rem;color:var(--muted)">min</span>
-        </div>
-        <div class="act-line">
-          <label>🚴 Vélo</label>
-          <input type="number" id="bike" min="0" max="600" placeholder="0"> <span style="font-size:0.8rem;color:var(--muted)">min</span>
-        </div>
-        <div class="act-line">
-          <label>🏊 Natation</label>
-          <input type="number" id="swim" min="0" max="600" placeholder="0"> <span style="font-size:0.8rem;color:var(--muted)">min</span>
-        </div>
-        <div class="act-line">
-          <label>🏋️ Musculation</label>
-          <input type="number" id="gym" min="0" max="600" placeholder="0"> <span style="font-size:0.8rem;color:var(--muted)">min</span>
-        </div>
+        <div class="act-line"><label>🚶 Marche</label><input type="number" id="walk" min="0" max="600" placeholder="0"><span class="unit">min</span></div>
+        <div class="act-line"><label>🏃 Course à pied</label><input type="number" id="run" min="0" max="600" placeholder="0"><span class="unit">min</span></div>
+        <div class="act-line"><label>🚴 Vélo</label><input type="number" id="bike" min="0" max="600" placeholder="0"><span class="unit">min</span></div>
+        <div class="act-line"><label>🏊 Natation</label><input type="number" id="swim" min="0" max="600" placeholder="0"><span class="unit">min</span></div>
+        <div class="act-line"><label>🏋️ Musculation</label><input type="number" id="gym" min="0" max="600" placeholder="0"><span class="unit">min</span></div>
+        <div class="act-line"><label>🏐 Volley-ball</label><input type="number" id="volley" min="0" max="600" placeholder="0"><span class="unit">min</span></div>
+        <div class="act-line"><label>⚽ Football</label><input type="number" id="foot" min="0" max="600" placeholder="0"><span class="unit">min</span></div>
+        <div class="act-line"><label>🏀 Basket-ball</label><input type="number" id="basket" min="0" max="600" placeholder="0"><span class="unit">min</span></div>
+        <div class="act-line"><label>🎾 Tennis</label><input type="number" id="tennis" min="0" max="600" placeholder="0"><span class="unit">min</span></div>
+        <div class="act-line"><label>💃 Danse</label><input type="number" id="dance" min="0" max="600" placeholder="0"><span class="unit">min</span></div>
+        <div class="act-line"><label>🪢 Corde à sauter</label><input type="number" id="rope" min="0" max="600" placeholder="0"><span class="unit">min</span></div>
       </div>
 
       <h2 style="margin-top:0.6rem">3 · Votre objectif</h2>
@@ -183,6 +200,25 @@
         <button data-g="lose" class="active">Perdre du poids</button>
         <button data-g="maintain">Maintenir</button>
         <button data-g="gain">Prise de masse</button>
+      </div>
+
+      <h2 style="margin-top:1rem">4 · Allergies (aliments exclus)</h2>
+      <div class="chips" id="allergies">
+        <button data-ex="lactose">🥛 Lactose</button>
+        <button data-ex="gluten">🌾 Gluten</button>
+        <button data-ex="fruits-a-coque">🥜 Fruits à coque</button>
+        <button data-ex="poisson">🐟 Poisson</button>
+        <button data-ex="oeuf">🥚 Œufs</button>
+      </div>
+
+      <h2 style="margin-top:0.9rem">5 · Vos goûts (clic : j'aime → j'aime pas)</h2>
+      <div class="chips" id="prefs">
+        <button data-p="viande" data-label="🥩 Viande">🥩 Viande</button>
+        <button data-p="poisson" data-label="🐟 Poisson">🐟 Poisson</button>
+        <button data-p="oeuf" data-label="🥚 Œufs">🥚 Œufs</button>
+        <button data-p="laitage" data-label="🧀 Laitages">🧀 Laitages</button>
+        <button data-p="legumineuse" data-label="🫘 Légumineuses">🫘 Légumineuses</button>
+        <button id="vegBtn">🌱 Végétarien</button>
       </div>
 
       <button class="btn" id="calc">Calculer mes besoins</button>
@@ -215,6 +251,8 @@
       <div class="meal"><div class="name">🌞 Déjeuner</div><div class="detail" id="meal2">—</div></div>
       <div class="meal"><div class="name">🌙 Dîner</div><div class="detail" id="meal3">—</div></div>
 
+      <button class="btn-secondary" id="shuffleMeals">🔄 Varier les repas</button>
+
       <p class="note">
         ⚠️ Estimations basées sur l'équation de Mifflin-St Jeor (référence scientifique) et des MET moyens.
         Ces indications ne remplacent pas un avis médical ou diététique professionnel.
@@ -225,6 +263,8 @@
   <script>
     // ----- État -----
     let goal = "lose";
+    let lastResult = null;
+    const excluded = new Set();
     const $ = (id) => document.getElementById(id);
 
     // Sélecteur d'objectif
@@ -235,6 +275,52 @@
         goal = b.dataset.g;
       });
     });
+
+    // Allergies : exclusion stricte (santé)
+    document.querySelectorAll("#allergies button").forEach((b) => {
+      b.addEventListener("click", () => {
+        const ex = b.dataset.ex;
+        if (excluded.has(ex)) { excluded.delete(ex); b.classList.remove("active"); }
+        else { excluded.add(ex); b.classList.add("active"); }
+      });
+    });
+
+    // Goûts : cycle neutre → j'aime 👍 → j'aime pas 👎 (conseil, pas interdiction)
+    const prefs = {};            // tag -> "like" | "dislike"
+    let vegMode = false;
+    const vegBtnEl = document.getElementById("vegBtn");
+    const prefChips = {};
+    document.querySelectorAll("#prefs button[data-p]").forEach((b) => { prefChips[b.dataset.p] = b; });
+
+    function setPrefChip(btn, state) {
+      btn.classList.toggle("like", state === "like");
+      btn.classList.toggle("dislike", state === "dislike");
+      btn.textContent = btn.dataset.label + (state === "like" ? " 👍" : state === "dislike" ? " 👎" : "");
+    }
+
+    document.querySelectorAll("#prefs button[data-p]").forEach((b) => {
+      b.addEventListener("click", () => {
+        const k = b.dataset.p;
+        const next = prefs[k] === undefined || prefs[k] === "" ? "like" : prefs[k] === "like" ? "dislike" : "";
+        prefs[k] = next;
+        setPrefChip(b, next);
+        if (vegMode && (k === "viande" || k === "poisson") && next !== "dislike") {
+          vegMode = false;
+          vegBtnEl.classList.remove("active");
+        }
+      });
+    });
+
+    // Végétarien : met viande + poisson en "j'aime pas"
+    vegBtnEl.addEventListener("click", () => {
+      vegMode = !vegMode;
+      vegBtnEl.classList.toggle("active", vegMode);
+      ["viande", "poisson"].forEach((k) => {
+        prefs[k] = vegMode ? "dislike" : "";
+        setPrefChip(prefChips[k], vegMode ? "dislike" : "");
+      });
+    });
+    $("shuffleMeals").addEventListener("click", () => renderMeals());
 
     // ----- Calculs -----
     // Mifflin-St Jeor : MB = 10*poids + 6.25*taille - 5*age + s (s=+5 homme, -161 femme)
@@ -248,11 +334,17 @@
 
     // Calories brûlées = MET × poids(kg) × durée(h)
     const METS = {
-      walk: { met: 3.5, label: "Marche" },      // marche soutenue 4.5-5 km/h
-      run:  { met: 9.8, label: "Course" },      // footing ~8 km/h
-      bike: { met: 7.5, label: "Vélo" },        // 19-22 km/h modéré
-      swim: { met: 8.3, label: "Natation" },    // nage libre modérée
-      gym:  { met: 6.0, label: "Musculation" }  // effort général modéré
+      walk:   { met: 3.5, label: "Marche" },       // marche soutenue 4.5-5 km/h
+      run:    { met: 9.8, label: "Course" },       // footing ~8 km/h
+      bike:   { met: 7.5, label: "Vélo" },         // 19-22 km/h modéré
+      swim:   { met: 8.3, label: "Natation" },     // nage libre modérée
+      gym:    { met: 6.0, label: "Musculation" },  // effort général modéré
+      volley: { met: 4.0, label: "Volley" },       // volley loisir
+      foot:   { met: 8.0, label: "Football" },     // match amical / modéré
+      basket: { met: 8.0, label: "Basket" },       // partie modérée
+      tennis: { met: 8.0, label: "Tennis" },       // simple modéré
+      dance:  { met: 5.0, label: "Danse" },        // danse générale
+      rope:   { met: 11.0, label: "Corde à sauter" } // rythme modéré (~100 sauts/min)
     };
 
     function computeSportKcal(w) {
@@ -264,14 +356,96 @@
       return total;
     }
 
-    // ----- Repas types selon l'objectif -----
-    function mealsFor(targetKcal, protG, glucG, lipG) {
+    // ----- Base d'aliments (tags : viande, poisson, oeuf, lactose, gluten, fruits-a-coque) -----
+    const FOODS = {
+      breakfast: [
+        { n: "Flocons d'avoine (60 g), lait demi-écrémé (25 cl), 1 banane", t: ["gluten", "lactose", "laitage"] },
+        { n: "Flocons d'avoine (60 g), boisson d'amande (25 cl), 1 banane, miel", t: ["gluten", "fruits-a-coque"] },
+        { n: "Yaourt grec (200 g), granola (40 g), fruits rouges", t: ["lactose", "gluten", "laitage"] },
+        { n: "2 tranches de pain complet, beurre de cacahuète (20 g), 1 orange", t: ["gluten", "fruits-a-coque"] },
+        { n: "Omelette de 3 œufs, épinards, 1 tranche de pain complet", t: ["oeuf", "gluten"] },
+        { n: "Smoothie banane-fruits rouges, lait d'avoine (25 cl), graines de chia", t: ["gluten"] },
+        { n: "Yaourt de soja (200 g), flocons de riz (50 g), fruits frais", t: [] },
+        { n: "Porridge de quinoa (60 g) au lait d'amande, myrtilles", t: ["fruits-a-coque"] },
+        { n: "Banane, 2 c. à s. de purée de sésame, boisson de riz (25 cl)", t: [] }
+      ],
+      protein: [
+        { n: "Escalope de poulet", t: ["viande"] },
+        { n: "Filet de dinde", t: ["viande"] },
+        { n: "Bœuf maigre (5 %)", t: ["viande"] },
+        { n: "Cabillaud", t: ["poisson"] },
+        { n: "Saumon", t: ["poisson"] },
+        { n: "Crevettes", t: ["poisson"] },
+        { n: "Tofu ferme", t: ["legumineuse"] },
+        { n: "Tempeh", t: ["legumineuse"] },
+        { n: "Lentilles corail (70 g crues)", t: ["legumineuse"] },
+        { n: "3 œufs + 2 blancs", t: ["oeuf"] }
+      ],
+      carb: [
+        { n: "riz complet (80 g crus)", t: [] },
+        { n: "pâtes complètes (80 g crues)", t: ["gluten"] },
+        { n: "quinoa (80 g crus)", t: [] },
+        { n: "pommes de terre vapeur (250 g)", t: [] },
+        { n: "patate douce (200 g)", t: [] },
+        { n: "boulgour (80 g crus)", t: ["gluten"] }
+      ],
+      veg: [
+        { n: "brocoli et carottes vapeur", t: [] },
+        { n: "ratatouille maison", t: [] },
+        { n: "haricots verts et tomates cerises", t: [] },
+        { n: "salade verte, concombre, poivrons", t: [] },
+        { n: "courgettes sautées à l'ail", t: [] },
+        { n: "chou-fleur rôti au paprika", t: [] }
+      ],
+      fat: [
+        { n: "1 c. à s. d'huile d'olive", t: [] },
+        { n: "1/2 avocat", t: [] },
+        { n: "10 olives noires", t: [] },
+        { n: "1 c. à s. de graines de tournesol", t: ["fruits-a-coque"] }
+      ],
+      dessert: [
+        { n: "fromage blanc 0 % (100 g)", t: ["lactose", "laitage"] },
+        { n: "yaourt de soja nature", t: [] },
+        { n: "compote sans sucre ajouté", t: [] },
+        { n: "2 carrés de chocolat noir 85 %", t: [] }
+      ]
+    };
+
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    // Choisit un aliment : allergies = exclusion stricte ; goûts = les "j'aime pas"
+    // ne sont pris qu'en dernier recours, les "j'aime" sont favorisés
+    function pickFrom(list) {
+      const safe = list.filter((f) => !f.t.some((t) => excluded.has(t)));
+      if (!safe.length) return null;
+      const liked = safe.filter((f) => f.t.some((t) => prefs[t] === "like"));
+      const disliked = safe.filter((f) => f.t.some((t) => prefs[t] === "dislike"));
+      const neutral = safe.filter((f) => !f.t.some((t) => prefs[t] === "like" || prefs[t] === "dislike"));
+      let pool = liked.concat(neutral);
+      if (!pool.length) pool = disliked;              // tout est "j'aime pas" : on garde ces options
+      else if (liked.length && Math.random() < 0.6) pool = liked; // favorise les préférés
+      return pick(pool).n;
+    }
+
+    function renderMeals() {
+      if (!lastResult) return;
+      const target = lastResult.target, protG = lastResult.protG;
       const p1 = Math.round(protG * 0.25), p2 = Math.round(protG * 0.4), p3 = Math.round(protG * 0.35);
-      return {
-        "🌅 Petit-déjeuner": `Flocons d'avoine (60 g), lait demi-écrémé (25 cl), 1 banane, ${Math.round(targetKcal*0.25)} kcal environ · ~${p1} g protéines`,
-        "🌞 Déjeuner": `Poulet ou poisson (${Math.round(p2*1.1)} g), riz ou pâtes complètes (80 g cuits avant cuisson), légumes vapeur, 1 c. à s. d'huile d'olive · ~${Math.round(targetKcal*0.4)} kcal · ~${p2} g protéines`,
-        "🌙 Dîner": `Œufs ou dinde (${Math.round(p3*1.1)} g), légumes, quinoa ou patate douce (150 g), fromage blanc 0 % (100 g) · ~${Math.round(targetKcal*0.35)} kcal · ~${p3} g protéines`
-      };
+      const noWay = "⚠️ Aucune option disponible avec ces filtres — retirez une contrainte";
+      // N'ajoute pas un poids entre parenthèses si l'aliment en contient déjà un
+      const withAmount = (food, g) => food.includes("(") ? food : food + " (" + g + " g)";
+      const b = pickFrom(FOODS.breakfast);
+      const pDej = pickFrom(FOODS.protein), pDin = pickFrom(FOODS.protein);
+      $("meal1").textContent = b === null ? noWay :
+        b + " · ~" + Math.round(target * 0.25) + " kcal · ~" + p1 + " g protéines";
+      $("meal2").textContent = (pDej === null) ? noWay :
+        withAmount(pDej, Math.round(p2 * 1.1)) + ", " + pickFrom(FOODS.carb) + ", " +
+        pickFrom(FOODS.veg) + ", " + pickFrom(FOODS.fat) +
+        " · ~" + Math.round(target * 0.4) + " kcal · ~" + p2 + " g protéines";
+      $("meal3").textContent = (pDin === null) ? noWay :
+        withAmount(pDin, Math.round(p3 * 1.1)) + ", " + pickFrom(FOODS.veg) + ", " +
+        pickFrom(FOODS.carb) + ", " + pickFrom(FOODS.dessert) +
+        " · ~" + Math.round(target * 0.35) + " kcal · ~" + p3 + " g protéines";
     }
 
     // ----- Action principale -----
@@ -320,11 +494,8 @@
       $("gluc").textContent = glucG + " g";
       $("lip").textContent = lipG + " g";
 
-      const meals = mealsFor(target, protG, glucG, lipG);
-      const keys = Object.keys(meals);
-      $("meal1").textContent = meals[keys[0]];
-      $("meal2").textContent = meals[keys[1]];
-      $("meal3").textContent = meals[keys[2]];
+      lastResult = { target: target, protG: protG };
+      renderMeals();
 
       $("results").classList.remove("hidden");
       $("results").scrollIntoView({ behavior: "smooth" });
