@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calories & Nutrition</title>
+  <style>
+    :root {
+      --bg-1: #1a2f23;
+      --bg-2: #2d5a3d;
+      --bg-3: #5cb85c;
+      --card: rgba(255, 255, 255, 0.08);
+      --text: #f2faf4;
+      --muted: rgba(242, 250, 244, 0.75);
+      --accent: #ffd166;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: linear-gradient(150deg, var(--bg-1), var(--bg-2), var(--bg-3));
+      display: flex;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .app { width: 100%; max-width: 430px; padding-bottom: 2rem; }
+    .header { text-align: center; padding: 1.2rem 0 0.4rem; }
+    .header h1 { font-size: 1.4rem; font-weight: 600; }
+    .header p { color: var(--muted); font-size: 0.85rem; margin-top: 0.2rem; }
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 18px;
+      padding: 1.25rem;
+      margin-top: 1rem;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .card h2 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 0.9rem;
+    }
+    .row { display: flex; gap: 0.75rem; }
+    .field { flex: 1; margin-bottom: 0.8rem; }
+    .field label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 0.3rem; }
+    .field input, .field select {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(0, 0, 0, 0.25);
+      color: var(--text);
+      font-size: 1rem;
+    }
+    .field input:focus, .field select:focus { outline: 2px solid var(--accent); border-color: transparent; }
+    .seg { display: flex; gap: 0.5rem; }
+    .seg button {
+      flex: 1;
+      padding: 0.6rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(0, 0, 0, 0.25);
+      color: var(--text);
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    .seg button.active { background: var(--accent); color: #1b2b1f; font-weight: 600; border-color: transparent; }
+    .btn {
+      width: 100%;
+      padding: 0.85rem;
+      border: none;
+      border-radius: 12px;
+      background: var(--accent);
+      color: #1b2b1f;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 0.4rem;
+    }
+    .btn:active { transform: scale(0.98); }
+    .hidden { display: none; }
+    .bignum { font-size: 2.6rem; font-weight: 300; line-height: 1.1; }
+    .bignum small { font-size: 1rem; color: var(--muted); font-weight: 400; }
+    .sub { color: var(--muted); font-size: 0.85rem; margin-top: 0.15rem; }
+    .stats { display: flex; justify-content: space-between; margin-top: 1rem; gap: 0.5rem; }
+    .stat {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 0.6rem 0.4rem;
+      text-align: center;
+    }
+    .stat .v { font-size: 1.15rem; font-weight: 600; }
+    .stat .l { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.15rem; }
+    .macro-row { display: flex; gap: 0.5rem; margin-top: 0.9rem; }
+    .macro { flex: 1; border-radius: 12px; padding: 0.7rem 0.4rem; text-align: center; }
+    .macro .v { font-size: 1.2rem; font-weight: 700; }
+    .macro .l { font-size: 0.7rem; opacity: 0.85; margin-top: 0.1rem; }
+    .m-prot { background: rgba(239, 83, 80, 0.25); }
+    .m-gluc { background: rgba(255, 209, 102, 0.25); }
+    .m-lip { background: rgba(100, 181, 246, 0.25); }
+    .meal {
+      background: rgba(0, 0, 0, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 0.75rem 0.9rem;
+      margin-top: 0.6rem;
+    }
+    .meal .name { font-weight: 600; }
+    .meal .detail { color: var(--muted); font-size: 0.82rem; margin-top: 0.2rem; }
+    .note { color: var(--muted); font-size: 0.72rem; margin-top: 0.9rem; line-height: 1.4; }
+    .activities { margin-top: 0.4rem; }
+    .act-line { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.55rem; }
+    .act-line label { flex: 1; font-size: 0.88rem; }
+    .act-line input { width: 70px; padding: 0.4rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.25); background: rgba(0,0,0,0.25); color: var(--text); font-size: 0.9rem; text-align: center; }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="header">
+      <h1>🥗 Calories & Nutrition</h1>
+      <p>Vos besoins quotidiens, calculés pour vous</p>
+    </div>
+
+    <!-- PROFIL -->
+    <section class="card">
+      <h2>1 · Votre profil</h2>
+      <div class="row">
+        <div class="field">
+          <label for="age">Âge (ans)</label>
+          <input type="number" id="age" min="10" max="100" placeholder="30">
+        </div>
+        <div class="field">
+          <label for="sex">Sexe</label>
+          <select id="sex">
+            <option value="h">Homme</option>
+            <option value="f">Femme</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="weight">Poids (kg)</label>
+          <input type="number" id="weight" min="30" max="250" placeholder="75">
+        </div>
+        <div class="field">
+          <label for="height">Taille (cm)</label>
+          <input type="number" id="height" min="120" max="230" placeholder="175">
+        </div>
+      </div>
+
+      <h2 style="margin-top:0.4rem">2 · Votre sport (par jour)</h2>
+      <div class="activities">
+        <div class="act-line">
+          <label>🚶 Marche</label>
+          <input type="number" id="walk" min="0" max="600" placeholder="0"> <span style="font-size:0.8rem;color:var(--muted)">min</span>
+        </div>
+        <div class="act-line">
+          <label>🏃 Course à pied</label>
+          <input type="number" id="run" min="0" max="600" placeholder="0"> <span style="font-size:0.8rem;color:var(--muted)">min</span>
+        </div>
+        <div class="act-line">
+          <label>🚴 Vélo</label>
+          <input type="number" id="bike" min="0" max="600" placeholder="0"> <span style="font-size:0.8rem;color:var(--muted)">min</span>
+        </div>
+        <div class="act-line">
+          <label>🏊 Natation</label>
+          <input type="number" id="swim" min="0" max="600" placeholder="0"> <span style="font-size:0.8rem;color:var(--muted)">min</span>
+        </div>
+        <div class="act-line">
+          <label>🏋️ Musculation</label>
+          <input type="number" id="gym" min="0" max="600" placeholder="0"> <span style="font-size:0.8rem;color:var(--muted)">min</span>
+        </div>
+      </div>
+
+      <h2 style="margin-top:0.6rem">3 · Votre objectif</h2>
+      <div class="seg" id="goal">
+        <button data-g="lose" class="active">Perdre du poids</button>
+        <button data-g="maintain">Maintenir</button>
+        <button data-g="gain">Prise de masse</button>
+      </div>
+
+      <button class="btn" id="calc">Calculer mes besoins</button>
+    </section>
+
+    <!-- RESULTATS -->
+    <section class="card hidden" id="results">
+      <h2>Vos résultats</h2>
+
+      <div style="text-align:center">
+        <div class="bignum" id="target">--<small> kcal/jour</small></div>
+        <div class="sub" id="targetDesc"></div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="v" id="bmr">--</div><div class="l">Métabolisme de base</div></div>
+        <div class="stat"><div class="v" id="sed">--</div><div class="l">Dépense sans sport</div></div>
+        <div class="stat"><div class="v" id="sport">--</div><div class="l">Calories sport</div></div>
+      </div>
+
+      <h2 style="margin-top:1.2rem">Macronutriments par jour</h2>
+      <div class="macro-row">
+        <div class="macro m-prot"><div class="v" id="prot">-- g</div><div class="l">Protéines</div></div>
+        <div class="macro m-gluc"><div class="v" id="gluc">-- g</div><div class="l">Glucides</div></div>
+        <div class="macro m-lip"><div class="v" id="lip">-- g</div><div class="l">Lipides</div></div>
+      </div>
+
+      <h2 style="margin-top:1.2rem">Exemple de journée type</h2>
+      <div class="meal"><div class="name">🌅 Petit-déjeuner</div><div class="detail" id="meal1">—</div></div>
+      <div class="meal"><div class="name">🌞 Déjeuner</div><div class="detail" id="meal2">—</div></div>
+      <div class="meal"><div class="name">🌙 Dîner</div><div class="detail" id="meal3">—</div></div>
+
+      <p class="note">
+        ⚠️ Estimations basées sur l'équation de Mifflin-St Jeor (référence scientifique) et des MET moyens.
+        Ces indications ne remplacent pas un avis médical ou diététique professionnel.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    // ----- État -----
+    let goal = "lose";
+    const $ = (id) => document.getElementById(id);
+
+    // Sélecteur d'objectif
+    document.querySelectorAll("#goal button").forEach((b) => {
+      b.addEventListener("click", () => {
+        document.querySelectorAll("#goal button").forEach((x) => x.classList.remove("active"));
+        b.classList.add("active");
+        goal = b.dataset.g;
+      });
+    });
+
+    // ----- Calculs -----
+    // Mifflin-St Jeor : MB = 10*poids + 6.25*taille - 5*age + s (s=+5 homme, -161 femme)
+    function mifflin(weightKg, heightCm, age, sex) {
+      const base = 10 * weightKg + 6.25 * heightCm - 5 * age;
+      return sex === "h" ? base + 5 : base - 161;
+    }
+
+    // Dépense hors sport : MB × 1.375 (activité sédentaire à légère)
+    const SEDENTARY_FACTOR = 1.375;
+
+    // Calories brûlées = MET × poids(kg) × durée(h)
+    const METS = {
+      walk: { met: 3.5, label: "Marche" },      // marche soutenue 4.5-5 km/h
+      run:  { met: 9.8, label: "Course" },      // footing ~8 km/h
+      bike: { met: 7.5, label: "Vélo" },        // 19-22 km/h modéré
+      swim: { met: 8.3, label: "Natation" },    // nage libre modérée
+      gym:  { met: 6.0, label: "Musculation" }  // effort général modéré
+    };
+
+    function computeSportKcal(w) {
+      let total = 0;
+      for (const [key, a] of Object.entries(METS)) {
+        const min = parseFloat($(key).value) || 0;
+        total += a.met * w * (min / 60);
+      }
+      return total;
+    }
+
+    // ----- Repas types selon l'objectif -----
+    function mealsFor(targetKcal, protG, glucG, lipG) {
+      const p1 = Math.round(protG * 0.25), p2 = Math.round(protG * 0.4), p3 = Math.round(protG * 0.35);
+      return {
+        "🌅 Petit-déjeuner": `Flocons d'avoine (60 g), lait demi-écrémé (25 cl), 1 banane, ${Math.round(targetKcal*0.25)} kcal environ · ~${p1} g protéines`,
+        "🌞 Déjeuner": `Poulet ou poisson (${Math.round(p2*1.1)} g), riz ou pâtes complètes (80 g cuits avant cuisson), légumes vapeur, 1 c. à s. d'huile d'olive · ~${Math.round(targetKcal*0.4)} kcal · ~${p2} g protéines`,
+        "🌙 Dîner": `Œufs ou dinde (${Math.round(p3*1.1)} g), légumes, quinoa ou patate douce (150 g), fromage blanc 0 % (100 g) · ~${Math.round(targetKcal*0.35)} kcal · ~${p3} g protéines`
+      };
+    }
+
+    // ----- Action principale -----
+    $("calc").addEventListener("click", () => {
+      const age = parseFloat($("age").value);
+      const w = parseFloat($("weight").value);
+      const h = parseFloat($("height").value);
+      const sex = $("sex").value;
+
+      if (!age || !w || !h || age < 10 || age > 100 || w < 30 || w > 250 || h < 120 || h > 230) {
+        alert("Merci de remplir correctement : âge (10-100 ans), poids (30-250 kg) et taille (120-230 cm).");
+        return;
+      }
+
+      // 1. Métabolisme de base
+      const bmr = mifflin(w, h, age, sex);
+      // 2. Dépense de vie quotidienne (hors sport)
+      const sedKcal = bmr * SEDENTARY_FACTOR;
+      // 3. Calories sport
+      const sportKcal = computeSportKcal(w);
+      // 4. Maintien
+      const maintenance = sedKcal + sportKcal;
+
+      // 5. Objectif
+      let target = maintenance, desc = "";
+      if (goal === "lose")      { target = maintenance - 500; desc = "Déficit de 500 kcal/jour ≈ −0,5 kg de gras par semaine"; }
+      else if (goal === "gain") { target = maintenance + 300; desc = "Surplus de 300 kcal/jour pour prendre du muscle proprement"; }
+      else                      { desc = "Maintien de votre poids actuel"; }
+      target = Math.round(target / 10) * 10;
+
+      // 6. Macros
+      // Protéines : 2 g/kg en sèche, 1.8 g/kg en prise de masse, 1.6 g/kg maintien (plafond raisonnable)
+      const protPerKg = goal === "lose" ? 2.0 : goal === "gain" ? 1.8 : 1.6;
+      let protG = Math.round(w * protPerKg);
+      const lipG = Math.round((target * 0.27) / 9);            // 27 % des calories en lipides
+      let glucG = Math.round((target - protG * 4 - lipG * 9) / 4); // le reste en glucides
+      if (glucG < 50) { glucG = 50; protG = Math.round((target - lipG * 9 - glucG * 4) / 4); } // garde-fou
+
+      // 7. Affichage
+      $("bmr").textContent = Math.round(bmr);
+      $("sed").textContent = Math.round(sedKcal);
+      $("sport").textContent = Math.round(sportKcal);
+      $("target").innerHTML = target + "<small> kcal/jour</small>";
+      $("targetDesc").textContent = desc;
+      $("prot").textContent = protG + " g";
+      $("gluc").textContent = glucG + " g";
+      $("lip").textContent = lipG + " g";
+
+      const meals = mealsFor(target, protG, glucG, lipG);
+      const keys = Object.keys(meals);
+      $("meal1").textContent = meals[keys[0]];
+      $("meal2").textContent = meals[keys[1]];
+      $("meal3").textContent = meals[keys[2]];
+
+      $("results").classList.remove("hidden");
+      $("results").scrollIntoView({ behavior: "smooth" });
+    });
+  </script>
+</body>
+</html>
